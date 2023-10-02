@@ -33,13 +33,13 @@ for i in range(0, len(df)):
 upper_ci = ""
 lower_ci = ""
 # Loop over all the forecast points to get the parameters needed to add to the database. 
-for i in range(0, len(df)):
-    forecast_id = i + 1
-    for a in range('from prediction to predictions10'):
-        if df.iloc[i, a] != None:
-            point_forecast = df.iloc[i, a]
-            upper_ci = point_forecast + 0.15
-            lower_ci = point_forecast - 0.15
-            date_added = datetime.now().date()
-            update_forecast(forecast_id, point_forecast, upper_ci, lower_ci, date_added)
-        else: break
+#for i in range(0, len(df)):
+#    forecast_id = i + 1
+ #   for a in range('from prediction to predictions10'):
+  #      if df.iloc[i, a] != None:
+   #         point_forecast = df.iloc[i, a]
+    #        upper_ci = point_forecast + 0.15
+     #       lower_ci = point_forecast - 0.15
+      #      date_added = datetime.now().date()
+       #     update_forecast(forecast_id, point_forecast, upper_ci, lower_ci, date_added)
+        #else: break
