@@ -9,7 +9,7 @@ def create_tables():
                 short_question TEXT, category TEXT, creation_date DATETIME, resolution_criteria TEXT)''') 
 
         cursor.execute('''CREATE TABLE IF NOT EXISTS forecast_points (update_id INTEGER PRIMARY KEY AUTOINCREMENT, forecast_id INTEGER,
-                point_forecast REAL, upper_ci REAL, lower_ci REAL, date_added DATETIME, 
+                point_forecast REAL, upper_ci REAL, lower_ci REAL, reason TEXT, date_added DATETIME, 
                 FOREIGN KEY(forecast_id) REFERENCES forecasts(id))''')
 
         cursor.execute('''CREATE TABLE IF NOT EXISTS resolutions (id INTEGER PRIMARY KEY AUTOINCREMENT, forecast_id INTEGER,

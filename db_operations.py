@@ -25,11 +25,11 @@ def add_forecast(question, short_question, category, creation_date, resolution_c
                         VALUES (?, ?, ?, ?, ?)''', (question, short_question, category, creation_date, resolution_criteria))
 
 # Function to update a forecast
-def update_forecast(forecast_id, point_forecast, upper_ci, lower_ci, date_added):
+def update_forecast(forecast_id, point_forecast, upper_ci, lower_ci, reason, date_added):
     with sqlite3.connect('forecasts.db') as conn:
         cursor = conn.cursor()
-        cursor.execute('''INSERT INTO forecast_points (forecast_id, point_forecast, upper_ci, lower_ci, date_added)
-                        VALUES (?, ?, ?, ?, ?)''', (forecast_id, point_forecast, upper_ci, lower_ci, date_added))
+        cursor.execute('''INSERT INTO forecast_points (forecast_id, point_forecast, upper_ci, lower_ci, reason, date_added)
+                        VALUES (?, ?, ?, ?, ?)''', (forecast_id, point_forecast, upper_ci, lower_ci, reason, date_added))
 
 
 # Function to resolve a question

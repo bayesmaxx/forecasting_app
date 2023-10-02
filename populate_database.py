@@ -43,4 +43,3 @@ for i in range(0, len(df)):
             date_added = datetime.now().date()
             update_forecast(forecast_id, point_forecast, upper_ci, lower_ci, date_added)
         else: break
-get_forecast_question(2)
