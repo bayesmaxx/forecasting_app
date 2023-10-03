@@ -3,9 +3,7 @@ import numpy as np
 import pandas as pd
 import math
 from datetime import datetime
-from db_operations import add_forecast
-from db_operations import get_forecast_question
-from db_operations import update_forecast
+from db_operations import add_forecast, get_forecast_question, update_forecast, resolve_forecast
 
 # Read the xlsx file
 xls = 'preds.xlsx'
@@ -41,14 +39,20 @@ for i in range(0, len(df)):
 
 upper_ci = ""
 lower_ci = ""
+# Unfortunately this is nothing that I've tracked before
+date_added = datetime.now().date()
 # Loop over all the forecast points to get the parameters needed to add to the database. 
-for i in range(0, len(df)):
-    forecast_id = i + 1
+for point in range(0, len(df)):
+    forecast_id = point + 1
     for a in range(5, 16):
-        if df.iloc[i, a] != None:
-            point_forecast = df.iloc[i, a]
+        if df.iloc[point, a].isnull():
+            break
+        else:
+            point_forecast = df.iloc[point, a]
             upper_ci = point_forecast + 0.15
             lower_ci = point_forecast - 0.15
-            date_added = datetime.now().date()
             update_forecast(forecast_id, point_forecast, upper_ci, lower_ci, date_added)
-        else: break
+
+    if df.iloc[point, 4].is_integer():
+        resolution = df.iloc[i, 4]
+        resolve_forecast(forecast_id, resolution, date_added)
