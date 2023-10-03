@@ -9,13 +9,22 @@ from db_operations import update_forecast
 
 # Read the xlsx file
 xls = 'preds.xlsx'
-raw = pd.read_excel(xls, 'Open Full')
+sheets = ['Open Full', 'Open Metaculus', 'Finished Full', 'Finished Metaculus']
 
-# Transpose and reset the index
-t_df = raw.T
-t_df.columns = t_df.iloc[0]
-df = t_df[1:]
+pre = pd.read_excel(xls, sheets[0])
+t_pre = pre.T
+t_pre.columns = t_pre.iloc[0]
+df = t_pre[1:]
 df.reset_index(inplace=True)
+
+
+for sheet in range(1, len(sheets)):
+    pre = pd.read_excel(xls, sheets[sheet])
+    t_pre = pre.T
+    t_pre.columns = t_pre.iloc[0]
+    data = t_pre[1:]
+    data.reset_index(inplace=True)
+    df.concat(data)    
 
 # Since I haven't used resolution criteria up until now, I'll just set these to empty
 resolution_criteria = ""
@@ -33,13 +42,13 @@ for i in range(0, len(df)):
 upper_ci = ""
 lower_ci = ""
 # Loop over all the forecast points to get the parameters needed to add to the database. 
-#for i in range(0, len(df)):
-#    forecast_id = i + 1
- #   for a in range('from prediction to predictions10'):
-  #      if df.iloc[i, a] != None:
-   #         point_forecast = df.iloc[i, a]
-    #        upper_ci = point_forecast + 0.15
-     #       lower_ci = point_forecast - 0.15
-      #      date_added = datetime.now().date()
-       #     update_forecast(forecast_id, point_forecast, upper_ci, lower_ci, date_added)
-        #else: break
+for i in range(0, len(df)):
+    forecast_id = i + 1
+    for a in range(5, 16):
+        if df.iloc[i, a] != None:
+            point_forecast = df.iloc[i, a]
+            upper_ci = point_forecast + 0.15
+            lower_ci = point_forecast - 0.15
+            date_added = datetime.now().date()
+            update_forecast(forecast_id, point_forecast, upper_ci, lower_ci, date_added)
+        else: break
