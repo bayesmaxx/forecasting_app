@@ -29,14 +29,14 @@ def update_forecast(forecast_id, point_forecast, upper_ci, lower_ci, reason, dat
     with sqlite3.connect('forecasts.db') as conn:
         cursor = conn.cursor()
         cursor.execute('''INSERT INTO forecast_points (forecast_id, point_forecast, upper_ci, lower_ci, reason, date_added)
-                        VALUES (?, ?, ?, ?, ?)''', (forecast_id, point_forecast, upper_ci, lower_ci, reason, date_added))
+                        VALUES (?, ?, ?, ?, ?, ?)''', (forecast_id, point_forecast, upper_ci, lower_ci, reason, date_added))
 
 
 # Function to resolve a question
 def resolve_forecast(forecast_id, resolution, resolution_date):
     with sqlite3.connect('forecasts.db') as conn:
         cursor = conn.cursor()
-        cursor.execute('SELECT point_forecast FROM point_forecasts WHERE id=?', (forecast_id, ))
+        cursor.execute('SELECT point_forecast FROM forecast_points WHERE forecast_id=?', (forecast_id, ))
     forecast_points = cursor.fetchall()
     actual = resolution
     points = np.array([x for x in forecast_points if isinstance(x, (int, float))])
