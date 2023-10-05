@@ -51,4 +51,3 @@ for point in range(0, len(df)):
         resolution = df.iloc[i, 4]
         resolve_forecast(forecast_id, resolution, date_added)
 
-print("HIII")
