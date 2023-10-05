@@ -39,7 +39,7 @@ def resolve_forecast(forecast_id, resolution, resolution_date):
         cursor.execute('SELECT point_forecast FROM forecast_points WHERE forecast_id=?', (forecast_id, ))
     forecast_points = cursor.fetchall()
     actual = resolution
-    points = np.array([x for x in forecast_points if isinstance(x, (int, float))])
+    points = np.array([point for res in forecast_points for point in res])
 # HERE: use the points to get an nparray
 # Define the brier score calculation
     brier = brier_score(points, actual)
