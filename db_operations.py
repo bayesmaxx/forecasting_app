@@ -104,3 +104,34 @@ def change_update(id, forecast_id, new_point, new_upper, new_lower):
         cursor = conn.cursor()
         cursor.execute('''UPDATE forecast_points SET point_forecast=?, upper_ci=?, lower_ci=?
                         WHERE id=? AND forecast_id=?''', (new_point, new_upper, new_lower, id, forecast_id))
+        
+# Functions to return the average score
+def avg_score(score_type=None, category=None):
+    if score_type:
+        if score_type.lower() == "log2":
+            score_t = "log2_score"
+        elif score_type.lower() == "logn":
+            score_t = "logn_score"
+        elif score_type.lower() == "brier":
+            score_t = "brier_score"
+        else:
+            score_t = "brier_score"
+    else:
+        score_t = "brier_score"
+    
+    if category:
+        with sqlite3.connect('forecasts.db') as conn:
+            cursor = conn.cursor()
+            like_query = "%" + category + "%"
+            cursor.execute('''SELECT ? FROM resolutions AS r LEFT JOIN forecasts AS f ON f.id = r.forecast_id WHERE f.category LIKE ?''', (score_t,like_query))
+            scores = cursor.fetchall()
+        #points = np.array([point for res in scores for point in res])
+        #return np.mean(points)
+    else:
+        with sqlite3.connect('forecasts.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute('''SELECT ? FROM resolutions AS r''', (score_t,))
+            scores = cursor.fetchall()
+        #points = np.array([point for res in scores for point in res])
+        #return np.mean(points)
+
