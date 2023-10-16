@@ -6,15 +6,15 @@ import numpy as np
 
 # Defining the brier score
 def brier_score(point, actual):
-    return np.average((point - actual) ** 2)
+    return np.mean((point - actual) ** 2)
 
 # Defining the natural logarithm score
 def logn_score(point, actual):
-    return np.average(actual * np.log(point) + (1-actual) * np.log(1-point))
+    return np.mean(actual * np.log(point) + (1-actual) * np.log(1-point))
 
 # Defining the base 2 log score
 def log2_score(point, actual):
-    return np.average(actual * np.log2(point) + (1-actual) * np.log2(1-point))
+    return np.mean(actual * np.log2(point) + (1-actual) * np.log2(1-point))
 
 
 #Function to add a new forecast, the parent table
@@ -106,32 +106,53 @@ def change_update(id, forecast_id, new_point, new_upper, new_lower):
                         WHERE id=? AND forecast_id=?''', (new_point, new_upper, new_lower, id, forecast_id))
         
 # Functions to return the average score
-def avg_score(score_type=None, category=None):
-    if score_type:
-        if score_type.lower() == "log2":
-            score_t = "log2_score"
-        elif score_type.lower() == "logn":
-            score_t = "logn_score"
-        elif score_type.lower() == "brier":
-            score_t = "brier_score"
-        else:
-            score_t = "brier_score"
-    else:
-        score_t = "brier_score"
-    
+def avg_brier(category=None):
     if category:
         with sqlite3.connect('forecasts.db') as conn:
             cursor = conn.cursor()
             like_query = "%" + category + "%"
-            cursor.execute('''SELECT ? FROM resolutions AS r LEFT JOIN forecasts AS f ON f.id = r.forecast_id WHERE f.category LIKE ?''', (score_t,like_query))
+            cursor.execute('''SELECT brier_score FROM resolutions AS r LEFT JOIN forecasts AS f ON f.id = r.forecast_id WHERE f.category LIKE ?''', (like_query,))
             scores = cursor.fetchall()
-        #points = np.array([point for res in scores for point in res])
-        #return np.mean(points)
+        points = np.array([point for res in scores for point in res])
+        return np.mean(points)
     else:
         with sqlite3.connect('forecasts.db') as conn:
             cursor = conn.cursor()
-            cursor.execute('''SELECT ? FROM resolutions AS r''', (score_t,))
+            cursor.execute('''SELECT brier_score FROM resolutions''')
             scores = cursor.fetchall()
-        #points = np.array([point for res in scores for point in res])
-        #return np.mean(points)
+        points = np.array([point for res in scores for point in res])
+        return np.mean(points)
 
+def avg_logn(category=None):
+    if category:
+        with sqlite3.connect('forecasts.db') as conn:
+            cursor = conn.cursor()
+            like_query = "%" + category + "%"
+            cursor.execute('''SELECT logn_score FROM resolutions AS r LEFT JOIN forecasts AS f ON f.id = r.forecast_id WHERE f.category LIKE ?''', (like_query,))
+            scores = cursor.fetchall()
+        points = np.array([point for res in scores for point in res])
+        return np.mean(points)
+    else:
+        with sqlite3.connect('forecasts.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute('''SELECT logn_score FROM resolutions''')
+            scores = cursor.fetchall()
+        points = np.array([point for res in scores for point in res])
+        return np.mean(points)
+
+def avg_log2(category=None):
+    if category:
+        with sqlite3.connect('forecasts.db') as conn:
+            cursor = conn.cursor()
+            like_query = "%" + category + "%"
+            cursor.execute('''SELECT log2_score FROM resolutions AS r LEFT JOIN forecasts AS f ON f.id = r.forecast_id WHERE f.category LIKE ?''', (like_query,))
+            scores = cursor.fetchall()
+        points = np.array([point for res in scores for point in res])
+        return np.mean(points)
+    else:
+        with sqlite3.connect('forecasts.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute('''SELECT log2_score FROM resolutions''')
+            scores = cursor.fetchall()
+        points = np.array([point for res in scores for point in res])
+        return np.mean(points)
