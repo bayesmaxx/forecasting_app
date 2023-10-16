@@ -48,6 +48,6 @@ for point in range(0, len(df)):
             break
             
     if not np.isnan(df.iloc[point, 4]):
-        resolution = df.iloc[i, 4]
+        resolution = df.iloc[point, 4]
         resolve_forecast(forecast_id, resolution, date_added)
 
