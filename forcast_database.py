@@ -17,5 +17,3 @@ def create_tables():
                 logn_score REAL, log2_score REAL, 
                FOREIGN KEY(forecast_id) REFERENCES forecasts(id))''')
 
-
-
