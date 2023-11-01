@@ -1,9 +1,18 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from rest_framework import viewsets
+from .models import Forecasts, ForecastPoints, Resolutions
+from .serializers import forecasts_serializer, forecast_points_serializer, resolutions_serializer
 
-# Create your views here.
-def forecast(request):
-    return HttpResponse('This is the forecast page.')
+class ForecastsViewSet(viewsets.ModelViewSet):
+    queryset = Forecasts.objects.all()
+    serializer_class = forecasts_serializer
 
-def all_forecasts(request):
-    return HttpResponse('This is the overview page')
+class ForecastPointsViewSet(viewsets.ModelViewSet):
+    queryset = ForecastPoints.objects.all()
+    serializer_class = forecast_points_serializer
+
+class ResolutionsViewSet(viewsets.ModelViewSet):
+    queryset = Resolutions.objects.all()
+    serializer_class = resolutions_serializer
+
